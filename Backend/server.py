@@ -14,6 +14,13 @@ GROWTH_PORT = ["WOOF", "UPST", "LYB"]
 INDEX_PORT = ["SPYG", "QQQ", "MGK"]
 QUALITY_PORT = ["AAPL","GOOG","TSLA"]
 VALUE_PORT = ["DVA", "PG", "JNJ"]
+investment_portfolio = {
+    'ETHICAL' : ETHICAL_PORT,
+    'GROWTH' : GROWTH_PORT,
+    'INDEX' : INDEX_PORT,
+    'QUALITY' : QUALITY_PORT,
+    'VALUE' : VALUE_PORT 
+}
 investment_types = {
     'ETHICAL' : 'CWEN SEDG NIO',
     'GROWTH' : 'WOOF UPST LYB',
@@ -29,6 +36,16 @@ investment_put_args.add_argument("type", type =str, help="type of investment")
 def loadTickers(sym):
     data = yf.download(investment_types[sym], period="5d")
     return data
+
+def loadArray(df):
+    arr = []
+    df.index = df.index.strftime('%b. %d %Y')
+    for index, row in df['Adj Close'].iterrows():
+        temp = {'name':index}
+        for index, value in row.items():
+            temp[index] = value
+        arr.append(temp)
+    return arr
 
 #Hello World API 
 @app.route("/test")
@@ -52,15 +69,17 @@ def helloWorld():
 
 class Investment(Resource):
     def get(self):
-        return{"ethical":"testing flask_restful"}
+        return{"data":"testing flask_restful"}
     def post(self):
         args = investment_put_args.parse_args()
         SELECTED = args.type
         k = loadTickers(SELECTED)
-        return{"ethical":k['Adj Close'].to_json(), "type":SELECTED}
+        arr = loadArray(k)
+        return{"data":arr, "type":SELECTED, "port":investment_portfolio[SELECTED]}
 
 
 api.add_resource(Investment,"/investment")
+
 
 
 if __name__ == "__main__":

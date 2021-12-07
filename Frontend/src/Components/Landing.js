@@ -1,21 +1,23 @@
 import React, {useState, useEffect } from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 
 const Landing = () => {
     const [data, setData] = useState([{}]);
     const [type, setType] = useState('Loading ...')
-    useEffect( ()=>{
-        fetch("/ethical").then(
-            res => res.json()
-        ).then(
-            data => {
-                setData(data)
-                console.log(data)
-            }
-        )
-    }, [])
-
+    const [tag, setTag] = useState([])
+    // useEffect( ()=>{
+    //     fetch("/ethical").then(
+    //         res => res.json()
+    //     ).then(
+    //         data => {
+    //             setData(data)
+    //             console.log(data)
+    //         }
+    //     )
+    // }, [])
     const onChangeHandler = (e) => {
         setType(e.target.value)
         axios({
@@ -24,24 +26,18 @@ const Landing = () => {
             data:{'type':e.target.value}
         })
         .then((res) => {
-            setData(res.data)
+            setData(res.data.data)
+            setType(res.data.type)
+            setTag(res.data.port)
+            console.log(data)
         })
         .catch((err)=>{console.log('error')})
-        console.log(e.target.value)
     }
+    const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
     return(
         <div>
             <h1>Landing</h1>
-            {(typeof data.type==='undefined') ? (
-                <div onChange={onChangeHandler}>
-                <input type="radio" value="ETHICAL" name="investmentType" /> Ethical
-                <input type="radio" value="GROWTH" name="investmentType" /> Growth
-                <input type="radio" value="INDEX" name="investmentType" /> Index
-                <input type="radio" value="QUALITY" name="investmentType" /> Quality
-                <input type="radio" value="VALUE" name="investmentType" /> Value
-                </div>
-            ): (
-            <div>
+        
                 <div onChange={onChangeHandler}>
                 <input type="radio" value="ETHICAL" name="investmentType" /> Ethical
                 <input type="radio" value="GROWTH" name="investmentType" /> Growth
@@ -50,12 +46,35 @@ const Landing = () => {
                 <input type="radio" value="VALUE" name="investmentType" /> Value
                 </div>
                 <p>Investment Type:{type}</p>
-                </div>
-            )}
-            {(typeof data.ethical==='undefined') ? (
+        
+            
+            {(typeof data==='undefined') ? (
                 <p>Loading. . . </p>
             ): (
-                <p>{data.ethical}</p>
+                <div style={{width:600, height:600}}>
+                    <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  width={500}
+                  height={300}
+                  data={data}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  {tag.map((value, i) => (
+                      <Line type="monotone" dataKey={value} stroke={colors[i]}/>
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+                </div>
             )}
             <Link to='/'>Return Home</Link>
         </div>
