@@ -11,34 +11,24 @@ investment_types = {
     'QUALITY' : 'AAPL GOOG TSLA',
     'VALUE' : 'DVA PG JNJ' }
 
-def loadTickers(sym):
-    data = yf.download(investment_types[sym], period="5d")
-    return data
+data = yf.download(investment_types['INDEX'], period="1d", interval = "30m")
+n=data.shape[0]
+data.drop(data.index[n-1],inplace=True)
+print(data)
+# def loadTickers(sym):
+#     data = yf.download(investment_types[sym], period="5d")
+#     return data
 
-# data = loadTickers('ETHICAL')
-# arr = []
-# data.index = data.index.strftime('%b. %d %Y')
-# print(data.index)
-# # data.index = data.index.to_pydatetime()
-# print(data['Adj Close'].iloc[0])
-# for index, row in data['Adj Close'].iterrows():
-#     temp = {'name':index}
-#     for index, value in row.items():
-#         temp[index] = value
-#     arr.append(temp)
+# def loadArray(df):
+#     arr = []
+#     df.index = df.index.strftime('%b. %d %Y')
+#     for index, row in data['Adj Close'].iterrows():
+#         temp = {'name':index}
+#         for index, value in row.items():
+#             temp[index] = value
+#         arr.append(temp)
+#     return arr
 
+# data = loadTickers('VALUE')
+# arr = loadArray(data)
 # print(arr)
-
-def loadArray(df):
-    arr = []
-    df.index = df.index.strftime('%b. %d %Y')
-    for index, row in data['Adj Close'].iterrows():
-        temp = {'name':index}
-        for index, value in row.items():
-            temp[index] = value
-        arr.append(temp)
-    return arr
-
-data = loadTickers('VALUE')
-arr = loadArray(data)
-print(arr)

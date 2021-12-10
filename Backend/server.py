@@ -7,6 +7,12 @@ import yfinance as yf
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
+Users = [
+    {'username': 'admin',
+    'password': 'admin'},
+    {'username': 'tu',
+    'password': 'tp'}
+]
 
 #investment_types = ["Ethical", "Growth", "Index", "Quality", "Value"]
 ETHICAL_PORT = ["CWEN", "SEDG", "NIO"]
@@ -30,16 +36,17 @@ investment_types = {
 SELECTED = ""
 
 data=pd.DataFrame()
-investment_put_args = reqparse.RequestParser()
-investment_put_args.add_argument("type", type =str, help="type of investment")
 
 def loadTickers(sym):
-    data = yf.download(investment_types[sym], period="5d")
+    data = yf.download(investment_types[sym], period="1d", interval ="30m")
+    if(sym == 'INDEX'):
+        n=data.shape[0]
+        data.drop(data.index[n-1],inplace=True)
     return data
 
 def loadArray(df):
     arr = []
-    df.index = df.index.strftime('%b. %d %Y')
+    df.index = df.index.strftime('%b. %d %Y %X')
     for index, row in df['Adj Close'].iterrows():
         temp = {'name':index}
         for index, value in row.items():
@@ -47,29 +54,15 @@ def loadArray(df):
         arr.append(temp)
     return arr
 
-#Hello World API 
-@app.route("/test")
-def test():
-    return {"msg":"Hello World"}
-
-@app.route("/strats")
-def strategies():
-    return {"strategies":investment_types}
-
-
-@app.route("/ethical")
-def ethical():
-    if('Adj Close' in data.columns):
-        return {"ethical":data['Adj Close'].to_json(), "type":SELECTED}
-    return {"ethical":"empty"}
-
-@app.route("/")
-def helloWorld():
-  return {"ethical":"Hello, cross-origin-world!"}
+investment_put_args = reqparse.RequestParser()
+investment_put_args.add_argument("type", type =str, help="type of investment")
 
 class Investment(Resource):
     def get(self):
-        return{"data":"testing flask_restful"}
+        k = {"data":"testing flask_restful"}
+        resp = api.make_response(k, code=200)
+        resp.set_cookie('i am cookie', 'test cookie')
+        return resp
     def post(self):
         args = investment_put_args.parse_args()
         SELECTED = args.type
@@ -77,10 +70,36 @@ class Investment(Resource):
         arr = loadArray(k)
         return{"data":arr, "type":SELECTED, "port":investment_portfolio[SELECTED]}
 
+def checkUsers(username, password):
+    for elem in Users:
+        print(elem)
+        if username and password in elem.values():
+            return True
+        return False
 
+login_put_args = reqparse.RequestParser()
+login_put_args.add_argument("username", type=str, help="username")
+login_put_args.add_argument("password", type=str, help="password")
+
+class Login(Resource):
+    def post(self):
+        args = login_put_args.parse_args()
+        username = args.username
+        password = args.password
+        print(username, password)
+        if(checkUsers(username, password)):
+            return api.make_response({"args":args}, 200)
+        else : 
+            return api.make_response({"msg":"Authorization Failed"}, 401)
+        print(username, password)
+        return {"data": "none"}
+
+class Signup(Resource):
+    def post(self):
+        return {"data":"none"}
 api.add_resource(Investment,"/investment")
-
-
+api.add_resource(Login, "/login")
+api.add_resource(Signup, "/signup")
 
 if __name__ == "__main__":
     print("#########################################################")

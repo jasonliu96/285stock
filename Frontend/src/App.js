@@ -12,8 +12,9 @@ class App extends React.Component{
   <Router>
     {<NavBar/>}
     <Routes>
+      <Route path = "" element ={<NavBar/>}/>
       <Route path = "test" element ={<Home/>}/>
-      <Route path = "" element = {<Landing/>}/>
+      <Route path = "land" element = {<Landing/>}/>
       <Route path = "login" element = {<Login/>}/>
       <Route path = "dash" element = {<Dashboard/>}/>
     </Routes>

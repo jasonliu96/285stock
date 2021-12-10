@@ -1,4 +1,5 @@
 Flask 1.1.2
-flash_restful 
+flask_restful 
+flask_cors
 yfinance
 venv

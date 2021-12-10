@@ -6,7 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 
 const Landing = () => {
     const [data, setData] = useState([{}]);
-    const [type, setType] = useState('Loading ...')
+    const [type, setType] = useState('Please Choose An Investment Type.')
     const [tag, setTag] = useState([])
     // useEffect( ()=>{
     //     fetch("/ethical").then(
@@ -26,7 +26,7 @@ const Landing = () => {
             data:{'type':e.target.value}
         })
         .then((res) => {
-            setData(res.data.data)
+            setData(res.data)
             setType(res.data.type)
             setTag(res.data.port)
             console.log(data)
@@ -48,15 +48,15 @@ const Landing = () => {
                 <p>Investment Type:{type}</p>
         
             
-            {(typeof data==='undefined') ? (
+            {(typeof data.data==='undefined') ? (
                 <p>Loading. . . </p>
             ): (
-                <div style={{width:600, height:600}}>
-                    <ResponsiveContainer width="100%" height="100%">
+                <div style={{width:800, height:600}}>
+                <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   width={500}
                   height={300}
-                  data={data}
+                  data={data.data}
                   margin={{
                     top: 5,
                     right: 30,
@@ -70,7 +70,7 @@ const Landing = () => {
                   <Tooltip />
                   <Legend />
                   {tag.map((value, i) => (
-                      <Line type="monotone" dataKey={value} stroke={colors[i]}/>
+                      <Line type="monotone" dataKey={value} key={i} stroke={colors[i]} activeDot={{ r: 1 }}/>
                   ))}
                 </LineChart>
               </ResponsiveContainer>
