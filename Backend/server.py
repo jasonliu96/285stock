@@ -20,6 +20,7 @@ GROWTH_PORT = ["WOOF", "UPST", "LYB"]
 INDEX_PORT = ["SPYG", "QQQ", "MGK"]
 QUALITY_PORT = ["AAPL","GOOG","TSLA"]
 VALUE_PORT = ["DVA", "PG", "JNJ"]
+
 investment_portfolio = {
     'ETHICAL' : ETHICAL_PORT,
     'GROWTH' : GROWTH_PORT,
@@ -27,6 +28,7 @@ investment_portfolio = {
     'QUALITY' : QUALITY_PORT,
     'VALUE' : VALUE_PORT 
 }
+
 investment_types = {
     'ETHICAL' : 'CWEN SEDG NIO',
     'GROWTH' : 'WOOF UPST LYB',
@@ -38,7 +40,7 @@ SELECTED = ""
 data=pd.DataFrame()
 
 def loadTickers(sym):
-    data = yf.download(investment_types[sym], period="1d", interval ="30m")
+    data = yf.download(investment_types[sym], period="5d", interval ="30m")
     if(sym == 'INDEX'):
         n=data.shape[0]
         data.drop(data.index[n-1],inplace=True)
@@ -71,11 +73,12 @@ class Investment(Resource):
         return{"data":arr, "type":SELECTED, "port":investment_portfolio[SELECTED]}
 
 def checkUsers(username, password):
-    for elem in Users:
-        print(elem)
-        if username and password in elem.values():
+    for line in open("userinfo.txt","r").readlines(): # Read the lines
+        login_info = line.split() # Split on the space, and store the results in a list of two strings
+        if username == login_info[0] and password == login_info[1]:
+            print("Correct credentials!")
             return True
-        return False
+        print("Incorrect credentials.")
 
 login_put_args = reqparse.RequestParser()
 login_put_args.add_argument("username", type=str, help="username")
@@ -97,6 +100,7 @@ class Login(Resource):
 class Signup(Resource):
     def post(self):
         return {"data":"none"}
+
 api.add_resource(Investment,"/investment")
 api.add_resource(Login, "/login")
 api.add_resource(Signup, "/signup")
