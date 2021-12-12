@@ -5,4 +5,18 @@ ul {
 
 li {
   padding: 0px, 5px, 0px, 5px; 
+  list-style: none;
+}
+
+.Navbar { 
+  background: #000;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem calc((100vw - 1000px)/2);
+  z-index: 10;
+}
+
+.NavLink {
+  color: #ffff;
 }

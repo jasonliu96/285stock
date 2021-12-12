@@ -5,7 +5,7 @@ import pandas as pd
 import yfinance as yf
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials =True)
 api = Api(app)
 Users = [
     {'username': 'admin',
@@ -96,6 +96,10 @@ login_put_args.add_argument("username", type=str, help="username")
 login_put_args.add_argument("password", type=str, help="password")
 
 class Login(Resource):
+    def get(self):
+        resp = api.make_response({"msg":"auth success"},code = 200)
+        resp.set_cookie('cookie', 'stronkest cookie')
+        return resp
     def post(self):
         args = login_put_args.parse_args()
         username = args.username
@@ -103,7 +107,7 @@ class Login(Resource):
         print(username, password)
         if(checkUsers(username, password)):
             resp = api.make_response({"msg":"auth success"},code = 200)
-            resp.set_cookie('stronkest cookie', 'stonk')
+            resp.set_cookie('cookie', 'stronkest cookie')
             return resp
         else : 
             return api.make_response({"msg":"Authorization Failed"}, 401)

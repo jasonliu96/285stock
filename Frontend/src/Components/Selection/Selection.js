@@ -1,7 +1,8 @@
 import React, {useState, useEffect } from 'react';
 import axios from 'axios';
 import {Navigate} from 'react-router-dom';
-
+import Navbar from '../NavBar'
+import NavBar from '../NavBar';
 
 const Selection = () => {
 
@@ -34,7 +35,9 @@ const Selection = () => {
         .catch((err)=> console.log(err))
     }
     return(
-        <div style={style}>
+        <div>
+        <Navbar/>
+        
         {flag?<Navigate to ="/dashboard"/>:null}
         <div> 
             <h1> Select an Input Strategy </h1>

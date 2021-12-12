@@ -1,7 +1,8 @@
 import React, {useState, useEffect } from 'react';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import {Link, Navigate} from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import Navbar from '../NavBar'
 
 const Dashboard = () => {
 
@@ -31,6 +32,7 @@ const Dashboard = () => {
   const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
   return(
       <div>
+        <Navbar/>
           <h1>Portfolio</h1>
           {
             (flag)?(
