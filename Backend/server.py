@@ -36,7 +36,7 @@ investment_types = {
     'QUALITY' : 'AAPL GOOG TSLA',
     'VALUE' : 'DVA PG JNJ' }
 SELECTED = ""
-
+AMOUNT = 0
 data=pd.DataFrame()
 
 def loadTickers(sym):
@@ -56,21 +56,38 @@ def loadArray(df):
         arr.append(temp)
     return arr
 
+
+selection_put_args = reqparse.RequestParser()
+selection_put_args.add_argument("type", type =str, help="type of investment", required=True)
+selection_put_args.add_argument("amount", type =str, help="amount to invest", required=True)
+
+class Selection(Resource):
+    def post(self):
+        args = selection_put_args.parse_args()
+        global SELECTED, AMOUNT
+        SELECTED = args.type
+        AMOUNT = args.amount
+        return api.make_response({"msg":"req received"}, 200)
+
+
 investment_put_args = reqparse.RequestParser()
 investment_put_args.add_argument("type", type =str, help="type of investment")
 
 class Investment(Resource):
     def get(self):
-        k = {"data":"testing flask_restful"}
-        resp = api.make_response(k, code=200)
-        resp.set_cookie('i am cookie', 'test cookie')
-        return resp
-    def post(self):
-        args = investment_put_args.parse_args()
-        SELECTED = args.type
-        k = loadTickers(SELECTED)
-        arr = loadArray(k)
-        return{"data":arr, "type":SELECTED, "port":investment_portfolio[SELECTED]}
+        if not SELECTED: 
+            return api.make_response({"msg":"No Investment Type Selected"}, 400)
+        else:  
+            k = loadTickers(SELECTED)
+            arr = loadArray(k)
+            payload = {"data":arr, "type":SELECTED, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED]}
+            return api.make_response(payload, 200)
+    # def post(self):
+    #     args = investment_put_args.parse_args()
+    #     SELECTED = args.type
+    #     k = loadTickers(SELECTED)
+    #     arr = loadArray(k)
+    #     return{"data":arr, "type":SELECTED, "port":investment_portfolio[SELECTED]}
 
 def checkUsers(username, password):
     for line in open("userinfo.txt","r").readlines(): # Read the lines
@@ -91,7 +108,9 @@ class Login(Resource):
         password = args.password
         print(username, password)
         if(checkUsers(username, password)):
-            return api.make_response({"args":args}, 200)
+            resp = api.make_response(k, code=200)
+            resp.set_cookie('stronkest cookie', 'stonk')
+            return api.make_response(200)
         else : 
             return api.make_response({"msg":"Authorization Failed"}, 401)
         print(username, password)
@@ -104,6 +123,7 @@ class Signup(Resource):
 api.add_resource(Investment,"/investment")
 api.add_resource(Login, "/login")
 api.add_resource(Signup, "/signup")
+api.add_resource(Selection, "/selection")
 
 if __name__ == "__main__":
     print("#########################################################")

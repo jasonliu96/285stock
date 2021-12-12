@@ -1,51 +1,54 @@
 import React, {useState, useEffect } from 'react';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
+
 
 const Selection = () => {
 
-  const [data, setData] = useState([{}]);
-  const [type, setType] = useState('Please Choose An Investment Type.')
-  const [tag, setTag] = useState([])
-  // useEffect( ()=>{
-  //     fetch('/ethical').then(
-  //         res => res.json()
-  //     ).then(
-  //         data => {
-  //             setData(data)
-  //             console.log(data)
-  //         }
-  //     )
-  // }, [])
-  const onChangeHandler = (e) => {
-      setType(e.target.value)
-      axios({
-          url: '/investment',
-          method: 'post',
-          data:{'type':e.target.value}
-      })
-      .then((res) => {
-          setData(res.data)
-          setType(res.data.type)
-          setTag(res.data.port)
-          console.log(data)
-      })
-      .catch((err)=>{console.log('error')})
-  }
-  const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-  return(
-      <div>
-          <h1>Selection</h1>
-                <div>
-                    <label style={{display:'block', padding:10}}>
-                        Enter An Amount to Invest: 
-                    <input style={{display:'block'}} type='text' placeholder='Enter an Amount'/>
+    const [type, setType] = useState('Please Choose An Investment Type.')
+    const [amount, setAmount] = useState();
+    const [flag, setFlag] = useState(false);
+    const style = {
+        height: '1vh',
+        width: '100%',
+        textAlign: 'center',
+        padding: 10,
+    }
+    const formStyle= {
+        padding:10
+    }
+    const handleSubmit = (e) => {
+        axios({
+            url: '/selection',
+            method: 'post',
+            data:{'type': type, 'amount': amount}
+        })
+        .then((res)=> {
+            if(res.status===200){
+                setFlag(true)
+            }
+            else {
+                console.log(res)
+            }
+        })
+        .catch((err)=> console.log(err))
+    }
+    return(
+        <div style={style}>
+        {flag?<Navigate to ="/dashboard"/>:null}
+        <div> 
+            <h1> Select an Input Strategy </h1>
+            <div className="SelectionForm" style={formStyle}>
+                <div className="AmountText">
+                    <label>
+                    Please Enter An Amount:
+                    <input type="number" name="amount" onChange={e=>setAmount(e.target.value)}/>
                     </label>
                 </div>
-                <div onChange={onChangeHandler}>
-                    <label style={{display:'block', padding:10}}>
+                <div className="InvestmentStrategyRadio">
+                    <label>
                         Select an Investment Strategy:
-                        <div style={{display:'block'}}>
+                        <div onChange={e=>setType(e.target.value)}> 
                             <input type='radio' value='ETHICAL' name='investmentType' /> Ethical
                             <input type='radio' value='GROWTH' name='investmentType' /> Growth
                             <input type='radio' value='INDEX' name='investmentType' /> Index
@@ -54,11 +57,13 @@ const Selection = () => {
                         </div>
                     </label>
                 </div>
-                <p>Investment Type:{type}</p>
-      
-          
-          
-      </div>
-  )
+                <button 
+                    onClick = {handleSubmit}>
+                    Submit
+                </button>
+            </div>
+        </div>
+        </div>
+    )
 }
 export default Selection

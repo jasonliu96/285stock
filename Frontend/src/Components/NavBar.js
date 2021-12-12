@@ -30,7 +30,7 @@ const NavBar = () =>{
             <nav >
                 <div style={{ width:'100%', display:'flex', flexDirection:'row', alignItems:'stretch'}}>
                 <div>
-                        <a href="/">Stock Suggestion Engine</a>
+                        <Link to="/"  >Stock Suggestion Engine</Link>
                     </div>
                     <ul style={{ listStyle:'none', display:'flex', flexDirection:'row'}}>                     
                         <li><Link to="/dashboard">Dashboard</Link></li>
