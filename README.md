@@ -1,8 +1,8 @@
 # 285stock
 285 final group project
 ### Members ###
-### Description ###
-Instructions to run
+
+## Instructions to run ##
 
 #### Dependencies
 cd into backend directory\
