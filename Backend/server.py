@@ -82,12 +82,6 @@ class Investment(Resource):
             arr = loadArray(k)
             payload = {"data":arr, "type":SELECTED, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED]}
             return api.make_response(payload, 200)
-    # def post(self):
-    #     args = investment_put_args.parse_args()
-    #     SELECTED = args.type
-    #     k = loadTickers(SELECTED)
-    #     arr = loadArray(k)
-    #     return{"data":arr, "type":SELECTED, "port":investment_portfolio[SELECTED]}
 
 def checkUsers(username, password):
     for line in open("userinfo.txt","r").readlines(): # Read the lines
@@ -108,13 +102,11 @@ class Login(Resource):
         password = args.password
         print(username, password)
         if(checkUsers(username, password)):
-            resp = api.make_response(k, code=200)
+            resp = api.make_response({"msg":"auth success"},code = 200)
             resp.set_cookie('stronkest cookie', 'stonk')
-            return api.make_response(200)
+            return resp
         else : 
             return api.make_response({"msg":"Authorization Failed"}, 401)
-        print(username, password)
-        return {"data": "none"}
 
 class Signup(Resource):
     def post(self):
