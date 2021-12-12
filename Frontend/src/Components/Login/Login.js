@@ -43,7 +43,7 @@ const Login = () => {
             <div className="form-group">
                 <input onChange = {e=>setPassword(e.target.value)} type="password" placeholder="Password"/>
             </div>
-            <button onClick = {submitLogin} className="btn btn-primary">Login</button>
+            <button onClick = {submitLogin} className="SubmitButton">Login</button>
             {errMessage&&<p style={{color:'red'}}>Credentials did not match</p>}
         </div>
     )

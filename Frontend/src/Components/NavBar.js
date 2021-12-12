@@ -12,32 +12,30 @@ const NavBar = () =>{
     if(cookie.load('cookie')){
         console.log("Able to read cookie");
         navLogin = (
-            <ul >
-                    <li><Link className="NavLink" to="/" onClick = {handleLogout}>Logout</Link></li>
+            <ul className="NavbarRight">
+                    <li><Link className="NavLinkRight" to="/" onClick = {handleLogout}>Logout</Link></li>
             </ul>
         );
     }else{
         //Else display login button
         console.log("Not Able to read cookie");
         navLogin = (
-            <ul style={{ listStyle:'none'}}>
-                    <li><Link className="NavLink" to="/">Login</Link></li>
+            <ul className="NavbarRight">
+                    <li><Link className="NavLinkRight" to="/">Login</Link></li>
             </ul>
         )
     }
-    let redirectVar = null;
 
     return(
-        <div className="Navbar" style={{width:'100%'}}>
-            {redirectVar}
-            <nav>
-                <div style={{ width:'100%', display:'flex', flexDirection:'row', alignItems:'stretch'}}>
-                <div>
-                        <Link className="Logo" to="/"  >Stock Suggestion Engine</Link>
+        <div>
+            <nav className= "Navbar">
+                <div className="Container">
+                    <div className ="Brand">
+                        <Link className="Logo" style={{width:'auto'}} to="/"  > SSE </Link>
                     </div>
-                    <ul style={{ listStyle:'none', display:'flex', flexDirection:'row'}}>                     
-                        <li ><Link className="NavLink" to="/dashboard">Dashboard</Link></li>
-                        <li ><Link className="NavLink" to="/selection">Selection</Link></li>
+                    <ul className= "NavbarList">                     
+                        <li className="NavbarItem"><Link className="NavLink" to="/dashboard">Dashboard</Link></li>
+                        <li className="NavbarItem"><Link className="NavLink" to="/selection">Selection</Link></li>
                     </ul>
                     {navLogin}
                 </div>
