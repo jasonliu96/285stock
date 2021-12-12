@@ -4,7 +4,7 @@ import { PieChart, Cell, Legend, Pie, ResponsiveContainer, Sector } from 'rechar
 
 const StockDistribution = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const colors = ['#0088FE', '#00C49F', '#FFBB28', '#BB8FCE', '#E74C3C', '#F08080'];
   //Call Backend -> data input = name: stock, value=total distribution amount //mv, price = closing price, shares
   const data01 = [
     { name: 'AAPL', value: 400, price:500, shares:10 },

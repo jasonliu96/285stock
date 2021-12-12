@@ -37,6 +37,7 @@ const StockGraph = () => {
             <div>
               <p>Your portfolio is looking awfully empty . . .</p>
               <p>Get started a <Link to = '/selection'>HERE</Link></p>
+              <img width="400" height="auto" src="/stonks.jpg" alt="if empty port"/>
             </div>
             ):
               (typeof data.data==='undefined') ? (
