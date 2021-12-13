@@ -38,6 +38,12 @@ STOCKINFO=pd.DataFrame()
 CLOSINGINFO = pd.DataFrame()
 DIST_ARR = []
 
+def initGlobals():
+    global SELECTED, AMOUNT, STOCKING, CLOSINGINFO, DIST_ARR, PORTFOLIO_VALUE
+    SELECTED = ''
+    AMOUNT = PORTFOLIO_VALUE = 0
+    DIST_ARR = []
+
 ## Loads the data from yfinance api for the selected tickers 
 # since index funds might have missing values for the last 30 minutes of market open drop last row of values
 def loadTickers(sym, period, interval):
@@ -99,7 +105,7 @@ selection_put_args.add_argument("amount", type =str, help="amount to invest", re
 @app.route("/")
 def index():
     return {"msg":"test backend"}
-    
+
 class Selection(Resource):
     def post(self):
         args = selection_put_args.parse_args()
@@ -124,7 +130,7 @@ class Distribution(Resource):
 
 class Investment(Resource):
     def get(self):
-        if not SELECTED: 
+        if STOCKINFO.size < 1: 
             return api.make_response({"msg":"No Investment Type Selected"}, 400)
         else:  
             arr = loadArray(STOCKINFO)
