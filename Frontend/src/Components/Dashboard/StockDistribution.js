@@ -4,6 +4,20 @@ import { PieChart, Cell, Legend, Pie, ResponsiveContainer, Sector } from 'rechar
 
 const StockDistribution = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [data, setData] = useState({})
+  useEffect( ()=>{
+    axios({
+      url: '/distribution',
+      method: "get",
+  })
+  .then((res) => {
+    console.log(res.data)
+    setData(res.data)
+  })
+  .catch((err)=>{
+    console.log(err)
+  })
+  }, [])
   const colors = ['#0088FE', '#00C49F', '#FFBB28', '#BB8FCE', '#E74C3C', '#F08080'];
   //Call Backend -> data input = name: stock, value=total distribution amount //mv, price = closing price, shares
   const data01 = [
@@ -57,9 +71,13 @@ const StockDistribution = () => {
     );
   };
   return(
-      <div style={{width:900, height:600, display:'flex', flexDirection:'row'}}>
+      <div>
+                  <h3>Stock Distribution</h3>
+        { (data.data === undefined)? (<p>loading</p>)
+        :
+        (
+        <div style={{width:900, height:600, display:'flex', flexDirection:'row'}}>
       <div style={{width:600, height:400}}>
-          <h3>Stock Distribution</h3>
         <ResponsiveContainer width="100%" height="100%">
         <PieChart width={400} height={400}>
           <Pie
@@ -67,7 +85,7 @@ const StockDistribution = () => {
             activeIndex={activeIndex}
             activeShape={renderActiveShape}
             isAnimationActive={false}
-            data={data01}
+            data={data.data}
             cx="50%"
             cy="50%"
             innerRadius={80}
@@ -75,12 +93,12 @@ const StockDistribution = () => {
             onMouseEnter={(_,index)=> setActiveIndex(index)}
             fill="#8884d8"
           >
-              {data01.map((entry, index) => (
+              {data.data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
         </Pie>
             <Legend payload={
-                data01.map(
+                data.data.map(
                 (item, index) => ({
                     id: item.name,
                     type: "square",
@@ -94,7 +112,7 @@ const StockDistribution = () => {
         <div className="StockTitle">
             <p>Stocks</p>
         </div>
-        {(data01.map((stock, key) => (
+        {(data.data.map((stock, key) => (
         <div className="row" key={key} style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
         <div style={{display:'flex', flexDirection:'column'}}>
         <li>{stock.name}</li>
@@ -107,6 +125,7 @@ const StockDistribution = () => {
         )))
         }
         </div>
+        </div>)}
       </div>
   )
 }

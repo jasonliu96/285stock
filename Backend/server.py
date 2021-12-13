@@ -7,12 +7,6 @@ import yfinance as yf
 app = Flask(__name__)
 CORS(app, supports_credentials =True)
 api = Api(app)
-Users = [
-    {'username': 'admin',
-    'password': 'admin'},
-    {'username': 'tu',
-    'password': 'tp'}
-]
 
 #investment_types = ["Ethical", "Growth", "Index", "Quality", "Value"]
 ETHICAL_PORT = ["CWEN", "SEDG", "NIO"]
@@ -34,16 +28,20 @@ investment_types = {
     'GROWTH' : 'WOOF UPST LYB',
     'INDEX' : 'SPYG QQQ MGK',
     'QUALITY' : 'AAPL GOOG TSLA',
-    'VALUE' : 'DVA PG JNJ' }
+    'VALUE' : 'DVA PG JNJ' 
+}
+
 SELECTED = ""
 AMOUNT = 0
 STOCKINFO=pd.DataFrame()
+CLOSINGINFO = pd.DataFrame()
+DIST_ARR = []
 
 ## Loads the data from yfinance api for the selected tickers 
 # since index funds might have missing values for the last 30 minutes of market open drop last row of values
-def loadTickers(sym):
-    data = yf.download(investment_types[sym], period="5d", interval ="30m")
-    if(sym == 'INDEX'):
+def loadTickers(sym, period, interval):
+    data = yf.download(investment_types[sym], period=period, interval=interval)
+    if(sym == 'INDEX' and interval != "1d"):
         n=data.shape[0]
         data.drop(data.index[n-1],inplace=True)
     return data
@@ -61,10 +59,34 @@ def loadArray(df):
         arr.append(temp)
     return arr
 
+#Call Backend -> data input = name: stock, value=total distribution amount //mv, price = closing price, shares
+## Data format [{name:stock, value:market distribution, price = adj. closing price, shares = num shares}]
 def distributeStocks():
-    if(AMOUNT<0):
+    global DIST_ARR
+    amt = float(AMOUNT)
+    newDist = []
+    if(amt<0):
         return 0
     else :
+        a = amt * .5
+        b = amt * .3
+        c = amt * .2
+        dist = [a, b, c]
+        total_val = 0
+        for index, (symbol, value) in enumerate(CLOSINGINFO['Adj Close'].iloc[0].items()):
+            print(index, symbol, value)
+            temp = {}
+            temp['name'] = symbol
+            shares = int(dist[index]/value)
+            temp['shares'] = shares
+            temp['price'] = round(value,2)
+            tot = value*shares
+            total_val += tot
+            temp['value'] = round(tot,2)
+            newDist.append(temp)
+        DIST_ARR = newDist
+        print(DIST_ARR)
+        print('total valuation of portfolio ', total_val)
         return 0
 
 
@@ -75,10 +97,12 @@ selection_put_args.add_argument("amount", type =str, help="amount to invest", re
 class Selection(Resource):
     def post(self):
         args = selection_put_args.parse_args()
-        global SELECTED, AMOUNT, STOCKINFO
+        global SELECTED, AMOUNT, STOCKINFO, CLOSINGINFO
         SELECTED = args.type
         AMOUNT = args.amount
-        STOCKINFO = loadTickers(SELECTED)
+        STOCKINFO = loadTickers(SELECTED, "5d", "15m")
+        CLOSINGINFO = loadTickers(SELECTED, "1d", "1d")
+        distributeStocks()
         return api.make_response({"msg":"req received"}, 200)
 
 
@@ -89,7 +113,7 @@ class Distribution(Resource):
     def get(self):
         if not SELECTED: 
             return api.make_response({"msg":"No Investment Type Selected"}, 400)
-        return api.make_response({"msg":"kappa1"}, 200)
+        return api.make_response({"data":DIST_ARR}, 200)
 
 class Investment(Resource):
     def get(self):
@@ -137,6 +161,7 @@ api.add_resource(Investment,"/investment")
 api.add_resource(Login, "/login")
 api.add_resource(Signup, "/signup")
 api.add_resource(Selection, "/selection")
+api.add_resource(Distribution, "/distribution")
 
 if __name__ == "__main__":
     print("#########################################################")
