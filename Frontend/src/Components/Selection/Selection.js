@@ -7,9 +7,10 @@ import NavBar from '../NavBar';
 const Selection = () => {
 
     const [type, setType] = useState('')
-    const [secondaryType, setSecondary] = useState('')
+    const [secondaryType, setSecondary] = useState('NONE')
     const [amount, setAmount] = useState();
     const [flag, setFlag] = useState(false);
+    const types = ['ETHICAL', 'GROWTH', 'INDEX', 'QUALITY', 'VALUE', 'NONE']
     const style = {
         height: '1vh',
         width: '100%',
@@ -23,7 +24,7 @@ const Selection = () => {
         axios({
             url: '/selection',
             method: 'post',
-            data:{'type': type, 'amount': amount}
+            data:{'type': type, 'amount': amount, 'secondaryType':secondaryType}
         })
         .then((res)=> {
             if(res.status===200){
@@ -52,12 +53,12 @@ const Selection = () => {
                 <div className="InvestmentStrategyRadio">
                     <label>
                         Select an Investment Strategy:
-                        <div onChange={e=>setType(e.target.value)}> 
-                            <input type='radio' value='ETHICAL' name='investmentType' /> Ethical
-                            <input type='radio' value='GROWTH' name='investmentType' /> Growth
-                            <input type='radio' value='INDEX' name='investmentType' /> Index
-                            <input type='radio' value='QUALITY' name='investmentType' /> Quality
-                            <input type='radio' value='VALUE' name='investmentType' /> Value
+                        <div onChange={e=>setType(e.target.value)} style={{display:'flex', flexDirection:'row'}}> 
+                        {
+                            (types.filter((k)=>k!='NONE').map((key, value) => (
+                                <div key ={key}><input type='radio' value={key} name='investmentType' /> {key}</div>
+                            )))
+                        }
                         </div>
                     </label>
                 </div>
@@ -65,13 +66,18 @@ const Selection = () => {
                     (<div className="InvestmentStrategyRadio">
                     <label>
                         Select Secondary Investment Strategy (Optional)
-                        <div onChange={e=>setSecondary(e.target.value)}> 
-                            <input type='radio' value='ETHICAL' name='investmentType2' /> Ethical
+                        <div onChange={e=>setSecondary(e.target.value)} style={{display:'flex', flexDirection:'row'}}> 
+                        {
+                            (types.filter((k)=>k!=type).map((key, value) => (
+                                <div key ={key}><input type='radio' value={key} name='investmentType2' /> {key}</div>
+                            )))
+                        }
+                            {/* <input type='radio' value='ETHICAL' name='investmentType2' /> Ethical
                             <input type='radio' value='GROWTH' name='investmentType2' /> Growth
                             <input type='radio' value='INDEX' name='investmentType2' /> Index
                             <input type='radio' value='QUALITY' name='investmentType2' /> Quality
                             <input type='radio' value='VALUE' name='investmentType2' /> Value
-                            <input type='radio' value='NONE' name='investmentType2' /> None
+                            <input type='radio' value='NONE' name='investmentType2' /> None */}
 
                         </div>
                     </label>

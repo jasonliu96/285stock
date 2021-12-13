@@ -86,7 +86,7 @@ def distributeStocks():
             temp['value'] = round(tot,2)
             newDist.append(temp)
         DIST_ARR = newDist
-        PORTFOLIO_VALUE = round(total_val,2)
+        PORTFOLIO_VALUE += round(total_val,2)
         print(DIST_ARR)
         print('total valuation of portfolio ', total_val)
         return 0
@@ -94,12 +94,14 @@ def distributeStocks():
 
 selection_put_args = reqparse.RequestParser()
 selection_put_args.add_argument("type", type =str, help="type of investment", required=True)
+selection_put_args.add_argument("secondType", type = str, help="secondary strat")
 selection_put_args.add_argument("amount", type =str, help="amount to invest", required=True)
 
 class Selection(Resource):
     def post(self):
         args = selection_put_args.parse_args()
         global SELECTED, AMOUNT, STOCKINFO, CLOSINGINFO
+        PORTFOLIO_VALUE = 0
         SELECTED = args.type
         AMOUNT = args.amount
         STOCKINFO = loadTickers(SELECTED, "5d", "15m")
