@@ -96,7 +96,10 @@ selection_put_args = reqparse.RequestParser()
 selection_put_args.add_argument("type", type =str, help="type of investment", required=True)
 selection_put_args.add_argument("secondType", type = str, help="secondary strat")
 selection_put_args.add_argument("amount", type =str, help="amount to invest", required=True)
-
+@app.route("/")
+def index():
+    return {"msg":"test backend"}
+    
 class Selection(Resource):
     def post(self):
         args = selection_put_args.parse_args()
