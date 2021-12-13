@@ -95,9 +95,22 @@ def distributeStocks(amount):
             total_val += tot
             temp['value'] = round(tot,2)
             newDist.append(temp)
-        DIST_ARR = newDist
+        DIST_ARR += newDist
         PORTFOLIO_VALUE += round(total_val,2)
+        investRemainder(amount-round(total_val,2))
         return 0
+
+### reinvests balance
+def investRemainder(amount):
+    global PORTFOLIO_VALUE 
+    balance = amount
+    for k in DIST_ARR:
+        while(balance>k['price']):
+            print(k['name'], k['price'], balance)
+            k['shares']+=1
+            k['value']+=k['price']
+            balance-=k['price']
+            PORTFOLIO_VALUE += k['price']
 
 
 selection_put_args = reqparse.RequestParser()

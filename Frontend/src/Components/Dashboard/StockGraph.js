@@ -33,7 +33,7 @@ const StockGraph = () => {
     console.log(err)
   })
   }, [])
-  const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const colors = ['#0088FE', '#00C49F', '#FFBB28', '#BB8FCE', '#E74C3C', '#F08080'];
   return(
       <div>
           <h3>Stock Graphs</h3>
@@ -51,7 +51,7 @@ const StockGraph = () => {
                 <div>
                   <div>
                     <p>Investment Strategy: {type}</p>
-                    <p>Amount invested: {portvalue}</p>
+                    <p>Amount invested: {portvalue.toFixed(2)}</p>
                     <p>Balance: {(amount - portvalue).toFixed(2)}</p>
                     </div>
                   <div style={{width:600, height:400}}>

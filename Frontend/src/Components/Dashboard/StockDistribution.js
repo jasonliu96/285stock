@@ -63,9 +63,9 @@ const StockDistribution = () => {
         />
         <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
         <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`Market Value: $${value}`}</text>
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`$${value}`}</text>
         <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
-          {`(Distribution ${(percent * 100).toFixed(2)}%)`}
+          {`(${(percent * 100).toFixed(2)}%)`}
         </text>
       </g>
     );
@@ -112,7 +112,7 @@ const StockDistribution = () => {
         <div className="StockTitle">
             <p>Stocks</p>
         </div>
-        <p>${portvalue}</p>
+        <p>${portvalue.toFixed(2)}</p>
         {(data.data.map((stock, key) => (
         <div className="row" key={key} style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
         <div style={{display:'flex', flexDirection:'column'}}>
