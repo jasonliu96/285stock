@@ -32,6 +32,7 @@ investment_types = {
 }
 
 SELECTED = ""
+SECOND_TYPE= ""
 AMOUNT = 0
 PORTFOLIO_VALUE =0 
 STOCKINFO=pd.DataFrame()
@@ -39,15 +40,18 @@ CLOSINGINFO = pd.DataFrame()
 DIST_ARR = []
 
 def initGlobals():
-    global SELECTED, AMOUNT, STOCKING, CLOSINGINFO, DIST_ARR, PORTFOLIO_VALUE
-    SELECTED = ''
-    AMOUNT = PORTFOLIO_VALUE = 0
+    global SELECTED, AMOUNT, STOCKINFO, CLOSINGINFO, DIST_ARR, PORTFOLIO_VALUE, SECOND_TYPE
+    SELECTED = SECOND_TYPE= ""
+    AMOUNT = 0
+    PORTFOLIO_VALUE =0 
+    STOCKINFO=pd.DataFrame()
+    CLOSINGINFO = pd.DataFrame()
     DIST_ARR = []
 
 ## Loads the data from yfinance api for the selected tickers 
 # since index funds might have missing values for the last 30 minutes of market open drop last row of values
 def loadTickers(sym, period, interval):
-    data = yf.download(investment_types[sym], period=period, interval=interval)
+    data = yf.download(sym, period=period, interval=interval)
     if(sym == 'INDEX' and interval != "1d"):
         n=data.shape[0]
         data.drop(data.index[n-1],inplace=True)
@@ -68,9 +72,10 @@ def loadArray(df):
 
 #Call Backend -> data input = name: stock, value=total distribution amount //mv, price = closing price, shares
 ## Data format [{name:stock, value:market distribution, price = adj. closing price, shares = num shares}]
-def distributeStocks():
+# Params: amount = amount to invest, 
+def distributeStocks(amount):
     global DIST_ARR, PORTFOLIO_VALUE
-    amt = float(AMOUNT)
+    amt = float(amount)
     newDist = []
     if(amt<0):
         return 0
@@ -81,7 +86,6 @@ def distributeStocks():
         dist = [a, b, c]
         total_val = 0
         for index, (symbol, value) in enumerate(CLOSINGINFO['Adj Close'].iloc[0].items()):
-            print(index, symbol, value)
             temp = {}
             temp['name'] = symbol
             shares = int(dist[index]/value)
@@ -93,14 +97,12 @@ def distributeStocks():
             newDist.append(temp)
         DIST_ARR = newDist
         PORTFOLIO_VALUE += round(total_val,2)
-        print(DIST_ARR)
-        print('total valuation of portfolio ', total_val)
         return 0
 
 
 selection_put_args = reqparse.RequestParser()
 selection_put_args.add_argument("type", type =str, help="type of investment", required=True)
-selection_put_args.add_argument("secondType", type = str, help="secondary strat")
+selection_put_args.add_argument("secondType", type = str, help="secondary strat", required=True)
 selection_put_args.add_argument("amount", type =str, help="amount to invest", required=True)
 @app.route("/")
 def index():
@@ -108,14 +110,23 @@ def index():
 
 class Selection(Resource):
     def post(self):
+        initGlobals()
         args = selection_put_args.parse_args()
-        global SELECTED, AMOUNT, STOCKINFO, CLOSINGINFO
+        global SELECTED, AMOUNT, STOCKINFO, CLOSINGINFO, SECOND_TYPE
         PORTFOLIO_VALUE = 0
         SELECTED = args.type
-        AMOUNT = args.amount
-        STOCKINFO = loadTickers(SELECTED, "5d", "15m")
-        CLOSINGINFO = loadTickers(SELECTED, "1d", "1d")
-        distributeStocks()
+        SECOND_TYPE = args.secondType
+        AMOUNT = float(args.amount)
+        CLOSINGINFO = loadTickers(investment_types[SELECTED], "1d", "1d")
+        if(SECOND_TYPE == 'NONE'):
+            STOCKINFO = loadTickers(investment_types[SELECTED], "5d", "30m")
+            distributeStocks(AMOUNT)
+        else :
+            sym = investment_types[SELECTED]+" "+investment_types[SECOND_TYPE]
+            STOCKINFO = loadTickers(sym, "5d", "30m")
+            distributeStocks(AMOUNT*.6)
+            CLOSINGINFO = loadTickers(investment_types[SECOND_TYPE], "1d", "1d")
+            distributeStocks(AMOUNT*.4)
         return api.make_response({"msg":"req received"}, 200)
 
 
@@ -134,8 +145,13 @@ class Investment(Resource):
             return api.make_response({"msg":"No Investment Type Selected"}, 400)
         else:  
             arr = loadArray(STOCKINFO)
-            payload = {"data":arr, "type":SELECTED, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED], "total":PORTFOLIO_VALUE}
-            return api.make_response(payload, 200)
+            if(SECOND_TYPE=="NONE"):
+                payload = {"data":arr, "type":SELECTED, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED], "total":PORTFOLIO_VALUE}
+                return api.make_response(payload, 200)
+            else :
+                payload = {"data":arr, "type":SELECTED+", "+SECOND_TYPE, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED]+investment_portfolio[SECOND_TYPE], "total":PORTFOLIO_VALUE}
+                return api.make_response(payload, 200)
+
 
 def checkUsers(username, password):
     for line in open("userinfo.txt","r").readlines(): # Read the lines
@@ -152,7 +168,7 @@ login_put_args.add_argument("password", type=str, help="password")
 class Login(Resource):
     def get(self):
         resp = api.make_response({"msg":"auth success"},code = 200)
-        resp.set_cookie('cookie', 'stronkest cookie')
+        resp.set_cookie('cookie', 'stronkest cookie', samesite='Lax')
         return resp
     def post(self):
         args = login_put_args.parse_args()
@@ -161,7 +177,7 @@ class Login(Resource):
         print(username, password)
         if(checkUsers(username, password)):
             resp = api.make_response({"msg":"auth success"},code = 200)
-            resp.set_cookie('cookie', 'stronkest cookie')
+            resp.set_cookie('cookie', 'stronkest cookie', samesite="None", secure=True)
             return resp
         else : 
             return api.make_response({"msg":"Authorization Failed"}, 401)
@@ -169,6 +185,7 @@ class Login(Resource):
 class Signup(Resource):
     def post(self):
         return {"data":"none"}
+
 
 api.add_resource(Investment,"/investment")
 api.add_resource(Login, "/login")

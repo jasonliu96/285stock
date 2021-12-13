@@ -81,11 +81,8 @@ def distributeStocks():
 
 
 def runCycle():
-    global STOCKINFO, CLOSINGINFO
-    STOCKINFO = loadTickers('INDEX', '5d', '30m')
-    CLOSINGINFO = loadTickers('INDEX', '1d', '1d')
-    arr = loadArray(STOCKINFO)
-    distributeStocks()
+    sym = investment_types['GROWTH']+" "+investment_types['ETHICAL']
+    print(sym)
 
 runCycle()
 

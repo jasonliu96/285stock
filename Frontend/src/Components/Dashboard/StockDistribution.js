@@ -24,11 +24,7 @@ const StockDistribution = () => {
   }, [])
   const colors = ['#0088FE', '#00C49F', '#FFBB28', '#BB8FCE', '#E74C3C', '#F08080'];
   //Call Backend -> data input = name: stock, value=total distribution amount //mv, price = closing price, shares
-  const data01 = [
-    { name: 'AAPL', value: 400, price:500, shares:10 },
-    { name: 'GOOG', value: 300, price:873 },
-    { name: 'MRNA', value: 300, price:214 },
-  ];
+
   const renderActiveShape = (props) => {
     const RADIAN = Math.PI / 180;
     const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value, price } = props;
