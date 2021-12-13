@@ -6,7 +6,8 @@ import NavBar from '../NavBar';
 
 const Selection = () => {
 
-    const [type, setType] = useState('Please Choose An Investment Type.')
+    const [type, setType] = useState('')
+    const [secondaryType, setSecondary] = useState('')
     const [amount, setAmount] = useState();
     const [flag, setFlag] = useState(false);
     const style = {
@@ -60,6 +61,22 @@ const Selection = () => {
                         </div>
                     </label>
                 </div>
+                {(type !=='')?
+                    (<div className="InvestmentStrategyRadio">
+                    <label>
+                        Select Secondary Investment Strategy (Optional)
+                        <div onChange={e=>setSecondary(e.target.value)}> 
+                            <input type='radio' value='ETHICAL' name='investmentType2' /> Ethical
+                            <input type='radio' value='GROWTH' name='investmentType2' /> Growth
+                            <input type='radio' value='INDEX' name='investmentType2' /> Index
+                            <input type='radio' value='QUALITY' name='investmentType2' /> Quality
+                            <input type='radio' value='VALUE' name='investmentType2' /> Value
+                            <input type='radio' value='NONE' name='investmentType2' /> None
+
+                        </div>
+                    </label>
+                </div>):null
+                }
                 <button 
                     onClick = {handleSubmit}>
                     Submit

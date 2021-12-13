@@ -9,6 +9,8 @@ const StockGraph = () => {
   const [type, setType] = useState('Please Choose An Investment Type.')
   const [portfolio, setPortfolio] = useState([])
   const [amount, setAmount] = useState(0);
+  const [portvalue, setPortValue] = useState(0);
+
   const [flag, setFlag] = useState(false);
   useEffect( ()=>{
     axios({
@@ -21,6 +23,7 @@ const StockGraph = () => {
       setType(res.data.type)
       setPortfolio(res.data.portfolio)
       setAmount(res.data.amount)
+      setPortValue(res.data.total)
       setFlag(false)
   })
   .catch((err)=>{
@@ -46,7 +49,8 @@ const StockGraph = () => {
                 <div>
                   <div>
                     <p>Investment Strategy: {type}</p>
-                    <p>Amount invested: {amount}</p>
+                    <p>Amount invested: {portvalue}</p>
+                    <p>Balance: {(amount - portvalue).toFixed(2)}</p>
                     </div>
                   <div style={{width:600, height:400}}>
                   <ResponsiveContainer width="100%" height="100%">

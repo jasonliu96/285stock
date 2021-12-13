@@ -33,6 +33,7 @@ investment_types = {
 
 SELECTED = ""
 AMOUNT = 0
+PORTFOLIO_VALUE =0 
 STOCKINFO=pd.DataFrame()
 CLOSINGINFO = pd.DataFrame()
 DIST_ARR = []
@@ -62,7 +63,7 @@ def loadArray(df):
 #Call Backend -> data input = name: stock, value=total distribution amount //mv, price = closing price, shares
 ## Data format [{name:stock, value:market distribution, price = adj. closing price, shares = num shares}]
 def distributeStocks():
-    global DIST_ARR
+    global DIST_ARR, PORTFOLIO_VALUE
     amt = float(AMOUNT)
     newDist = []
     if(amt<0):
@@ -85,6 +86,7 @@ def distributeStocks():
             temp['value'] = round(tot,2)
             newDist.append(temp)
         DIST_ARR = newDist
+        PORTFOLIO_VALUE = round(total_val,2)
         print(DIST_ARR)
         print('total valuation of portfolio ', total_val)
         return 0
@@ -113,7 +115,7 @@ class Distribution(Resource):
     def get(self):
         if not SELECTED: 
             return api.make_response({"msg":"No Investment Type Selected"}, 400)
-        return api.make_response({"data":DIST_ARR}, 200)
+        return api.make_response({"data":DIST_ARR, "total":PORTFOLIO_VALUE}, 200)
 
 class Investment(Resource):
     def get(self):
@@ -121,7 +123,7 @@ class Investment(Resource):
             return api.make_response({"msg":"No Investment Type Selected"}, 400)
         else:  
             arr = loadArray(STOCKINFO)
-            payload = {"data":arr, "type":SELECTED, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED]}
+            payload = {"data":arr, "type":SELECTED, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED], "total":PORTFOLIO_VALUE}
             return api.make_response(payload, 200)
 
 def checkUsers(username, password):

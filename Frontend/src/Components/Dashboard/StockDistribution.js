@@ -5,6 +5,7 @@ import { PieChart, Cell, Legend, Pie, ResponsiveContainer, Sector } from 'rechar
 const StockDistribution = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [data, setData] = useState({})
+  const [portvalue, setPortValue] = useState(0);
   useEffect( ()=>{
     axios({
       url: '/distribution',
@@ -13,6 +14,7 @@ const StockDistribution = () => {
   .then((res) => {
     console.log(res.data)
     setData(res.data)
+    setPortValue(res.data.total)
   })
   .catch((err)=>{
     console.log(err)
@@ -112,6 +114,7 @@ const StockDistribution = () => {
         <div className="StockTitle">
             <p>Stocks</p>
         </div>
+        <p>${portvalue}</p>
         {(data.data.map((stock, key) => (
         <div className="row" key={key} style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
         <div style={{display:'flex', flexDirection:'column'}}>
