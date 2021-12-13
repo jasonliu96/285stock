@@ -5,13 +5,11 @@ import Navbar from '../NavBar';
 import StockGraph from './StockGraph';
 import StockDistribution  from './StockDistribution';
 const Dashboard = () => {
-  const [graphFlag, setGraphFlag] = useState(true)
-  const [distFlag, setDistFlag] = useState(false)
   return(
       <div>
         <Navbar/>
           <h1>Portfolio</h1>
-          <div style={{display:'flex', flexDirection:'row' }}>
+          <div style={{display:'flex', flexDirection:'row'}}>
             {<StockGraph/>}
             {<StockDistribution/>}
           </div>

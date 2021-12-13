@@ -6,6 +6,8 @@ const StockDistribution = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [data, setData] = useState({})
   const [portvalue, setPortValue] = useState(0);
+  axios.defaults.withCredentials = true
+
   useEffect( ()=>{
     axios({
       url: '/distribution',

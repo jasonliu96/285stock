@@ -12,6 +12,8 @@ const StockGraph = () => {
   const [portvalue, setPortValue] = useState(0);
 
   const [flag, setFlag] = useState(false);
+  axios.defaults.withCredentials = true
+
   useEffect( ()=>{
     axios({
       url: '/investment',
