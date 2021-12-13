@@ -1,8 +1,8 @@
-import React, {useState, useEffect } from 'react';
-import axios from 'axios';
-import {Link} from 'react-router-dom';
+import React from 'react';
+import {Navigate} from 'react-router-dom';
 import Login from './Login/Login';
-import Navbar from './NavBar'
+import Navbar from './NavBar';
+import cookie from 'react-cookies';
 const style = {
         height: '1vh',
         width: '100%',
@@ -10,8 +10,9 @@ const style = {
 }
 const Landing = () => {
     return(
-        <div style={style}>
-            {<Navbar/>}
+        <div style={style}> 
+            <Navbar/>
+            {cookie.load('cookie')?<Navigate to ="/dashboard"/>:null}
             <h1>STONK SUGGEST</h1>
             <Login/>
         </div>

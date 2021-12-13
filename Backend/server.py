@@ -3,6 +3,8 @@ from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS
 import pandas as pd
 import yfinance as yf
+import config 
+from cryptography.fernet import Fernet
 
 app = Flask(__name__)
 CORS(app, supports_credentials =True)
@@ -157,6 +159,7 @@ class Investment(Resource):
         if STOCKINFO.size < 1: 
             return api.make_response({"msg":"No Investment Type Selected"}, 400)
         else:  
+            print(STOCKINFO)
             arr = loadArray(STOCKINFO)
             if(SECOND_TYPE=="NONE"):
                 payload = {"data":arr, "type":SELECTED, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED], "total":PORTFOLIO_VALUE}
@@ -165,24 +168,30 @@ class Investment(Resource):
                 payload = {"data":arr, "type":SELECTED+", "+SECOND_TYPE, "amount":AMOUNT, "portfolio":investment_portfolio[SELECTED]+investment_portfolio[SECOND_TYPE], "total":PORTFOLIO_VALUE}
                 return api.make_response(payload, 200)
 
-
+fernet = Fernet(config.key)
 def checkUsers(username, password):
     for line in open("userinfo.txt","r").readlines(): # Read the lines
         login_info = line.split() # Split on the space, and store the results in a list of two strings
-        if username == login_info[0] and password == login_info[1]:
+        print("decode")
+        dPW = fernet.decrypt(str.encode(login_info[1])).decode()
+        print(dPW)
+        if username == login_info[0] and password == dPW:
             print("Correct credentials!")
             return True
         print("Incorrect credentials.")
+
+def addUser(username, password):
+    file01 = open("userinfo.txt", "a")
+    ePW = fernet.encrypt(password.encode())
+    L = username+" "+ePW.decode()+"\n"
+    file01.write(L)
+    file01.close()
 
 login_put_args = reqparse.RequestParser()
 login_put_args.add_argument("username", type=str, help="username")
 login_put_args.add_argument("password", type=str, help="password")
 
 class Login(Resource):
-    def get(self):
-        resp = api.make_response({"msg":"auth success"},code = 200)
-        resp.set_cookie('cookie', 'stronkest cookie', samesite='Lax')
-        return resp
     def post(self):
         args = login_put_args.parse_args()
         username = args.username
@@ -195,9 +204,16 @@ class Login(Resource):
         else : 
             return api.make_response({"msg":"Authorization Failed"}, 401)
 
+signup_put_args = reqparse.RequestParser()
+signup_put_args.add_argument("username", type=str, help="username", required=True)
+signup_put_args.add_argument("password", type=str, help="password", required=True)
 class Signup(Resource):
     def post(self):
-        return {"data":"none"}
+        args = signup_put_args.parse_args()
+        addUser(args.username, args.password)
+        resp = api.make_response({"msg":"auth success"},code = 200)
+        resp.set_cookie('cookie', 'stronkest cookie', samesite="None", secure=True)
+        return resp
 
 
 api.add_resource(Investment,"/investment")

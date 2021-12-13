@@ -63,7 +63,7 @@ const StockDistribution = () => {
         />
         <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
         <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`$${value}`}</text>
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`$${value.toFixed(2)}`}</text>
         <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
           {`(${(percent * 100).toFixed(2)}%)`}
         </text>
@@ -72,7 +72,7 @@ const StockDistribution = () => {
   };
   return(
       <div>
-                  <h3>Stock Distribution</h3>
+        <h3>Stock Distribution</h3>
         { (data.data === undefined)? (<p>loading</p>)
         :
         (

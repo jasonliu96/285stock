@@ -33,6 +33,7 @@ a {
 }
 .NavbarRight {
   width:40%;
+  float:right;
   display: flex;
   flex-direction: row;
   text-decoration: none;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import {Navigate} from 'react-router-dom';
 import Navbar from '../NavBar';
+import cookie from 'react-cookies';
 
 const Selection = () => {
 
@@ -32,7 +33,7 @@ const Selection = () => {
     return(
         <div>
         <Navbar/>
-        
+        {(!cookie.load('cookie'))?<Navigate to ="/"/>:null}
         {flag?<Navigate to ="/dashboard"/>:null}
         <div> 
             <h1> Select an Input Strategy </h1>
