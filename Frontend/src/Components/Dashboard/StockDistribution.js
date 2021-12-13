@@ -72,12 +72,12 @@ const StockDistribution = () => {
   };
   return(
       <div>
-        <h3>Stock Distribution</h3>
         { (data.data === undefined)? (<p>loading</p>)
         :
         (
         <div style={{width:900, height:600, display:'flex', flexDirection:'row'}}>
       <div style={{width:600, height:400}}>
+      <h3>Stock Distribution</h3>
         <ResponsiveContainer width="100%" height="100%">
         <PieChart width={400} height={400}>
           <Pie

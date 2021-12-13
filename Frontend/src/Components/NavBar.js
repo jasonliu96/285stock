@@ -12,17 +12,21 @@ const NavBar = () =>{
     }
     if(cookie.load('cookie')){
         navLogin = (
-            <ul className="NavbarRight">
-                    <li><Link className="NavLinkRight" to="/" onClick = {handleLogout}>Logout</Link></li>
-            </ul>
+            <div className="NavbarRight">
+                <ul>
+                    <li><Link to="/" onClick = {handleLogout}>Logout</Link></li>
+                </ul>
+            </div>
         );
     }else{
-        //Else display login button
+        //Else display login button 
         navLogin = (
-            <ul className="NavbarRight">
-                    <li><Link className="NavLinkRight" to="/">Log In</Link></li>
-                    <li><Link className="NavLinkRight" to="/signup">Sign Up</Link></li>
-            </ul>
+            <div className="NavbarRight">
+                <ul>
+                        <li ><Link  to="/">Log In</Link></li>
+                        <li ><Link  to="/signup">Sign Up</Link></li>
+                </ul>
+            </div>
         )
     }
 
@@ -32,14 +36,18 @@ const NavBar = () =>{
             <div>
                 <nav className= "Navbar">
                 <div className="Container">
-                    <div className ="Brand" style = {{display:'flex', flexDirection:'row',  alignItems: 'center', justifyContent: 'center'}}>
-                        <AiOutlineStock fontSize="1.5em"/>
-                        <Link className="Logo" style={{width:'auto'}} to="/dashboard"  > SSE </Link>
+                    <div className ="NavbarLeft">
+                        <div className ="Brand" >
+                            <AiOutlineStock fontSize="1.5em"/>
+                            <Link className="Logo" to="/dashboard"  > SSE </Link>                
+                        </div>
+                        <div className= "NavbarList">
+                            <ul >                     
+                                <li ><Link to="/dashboard">Dashboard</Link></li>
+                                <li ><Link to="/selection">Selection</Link></li>
+                            </ul>
+                        </div>
                     </div>
-                    <ul className= "NavbarList">                     
-                        <li className="NavbarItem"><Link className="NavLink" to="/dashboard">Dashboard</Link></li>
-                        <li className="NavbarItem"><Link className="NavLink" to="/selection">Selection</Link></li>
-                    </ul>
                     {navLogin}
                 </div>
             </nav>
@@ -48,9 +56,9 @@ const NavBar = () =>{
             <div>
                 <nav className= "Navbar">
                 <div className="Container">
-                <div className ="Brand" style = {{display:'flex', flexDirection:'row',  alignItems: 'center', justifyContent: 'center'}}>
+                    <div className ="Brand">
                         <AiOutlineStock fontSize="1.5em"/>
-                        <Link className="Logo" onClick={ (event) => event.preventDefault() } style={{width:'auto'}} to="/"  > SSE </Link>
+                        <Link onClick={ (event) => event.preventDefault() } to="/"  > SSE </Link>
                     </div>
                     {navLogin}
                 </div>

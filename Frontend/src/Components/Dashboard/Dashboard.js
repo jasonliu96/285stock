@@ -8,12 +8,14 @@ const Dashboard = () => {
   return(
       <div>
         <Navbar/>
+        <div className="Dashboard">
         {(!cookie.load('cookie'))?<Navigate to ="/"/>:null}
           <h1>Portfolio</h1>
           <div style={{display:'flex', flexDirection:'row'}}>
             {<StockGraph/>}
-            {<StockDistribution/>}
+            {<StockDistribution className ="StockDistribution"/>}
           </div>
+        </div>
       </div>
   )
 }

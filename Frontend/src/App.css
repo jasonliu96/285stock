@@ -1,43 +1,25 @@
-ul {
-  padding:0px, 5px;
-  margin:0px;
-}
-
-li {
-  padding: 0px, 5px, 0px, 5px; 
-  list-style: none;
-}
-
-a {
-  text-decoration: none;
-}
-
 .Navbar > .Container{
   background-color: #5bc5a7;
   color: white;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  text-align:center;
+  align-items:center;
   padding: 5px;
   width:100%;
   height: 2rem;
+  overflow:auto;
 }
 
-.NavbarList {
-  width:100%;
-  height:100%;
-  display: flex;
-  flex-direction: row;
-  list-style-type: none;
-  justify-content: space-between;
-
-}
 .NavbarRight {
-  width:40%;
+  width:20%;
   float:right;
   display: flex;
   flex-direction: row;
   text-decoration: none;
   list-style-type: none;
+  height:auto;
 }
 
 .Navbar a{
@@ -45,7 +27,38 @@ a {
   color: white;
 }
 
-.Navbar button, .SubmitButton {
+.NavbarRight ul, .NavbarList ul {
+  list-style-type: none;
+  margin: 0;
+  margin-left:10px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.NavbarRight li, .NavbarList li{
+  list-style:none;
+  float:left;
+  padding: 0 5px 0 5px;
+}
+
+.NavbarRight a, .NavbarList a{
+  text-align:center;
+}
+
+.Brand {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px 0 5px;
+}
+
+.NavbarLeft {
+  display: flex;
+  flex-direction: row;
+}
+
+.SubmitButton {
   background-color: #5bc5a7;
   font-size: 16px;
   border-style: solid;
@@ -56,11 +69,6 @@ a {
   padding: 5px 5px;
   margin-left: 10px;
   margin-right: 10px;
-}
-
-.Navbar button:hover{
-  background-color: #55ac93;
-  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
 .StockTitle{
@@ -91,4 +99,28 @@ a {
   color: #999999;
   justify-content: start;
   padding: 8px, 8px, 8px, 5px; 
+}
+.SelectionPage h1{
+  text-align: center;
+}
+.SelectionPageItem{
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.AmountText input, .AmountText label {
+  display:block;
+  margin-bottom: 10px;
+}
+.InvestmentStrategyRadio {
+  margin-bottom: 10px;
+  margin-right: 30px;
+}
+
+.Dashboard {
+  margin-left:40px;
+}
+
+.Dashboard h3 {
+  text-align: center;
 }
