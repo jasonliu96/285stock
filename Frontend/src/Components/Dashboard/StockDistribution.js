@@ -72,7 +72,7 @@ const StockDistribution = () => {
   };
   return(
       <div>
-        { (data.data === undefined)? (<p>loading</p>)
+        { (data.data === undefined)? (<div><h3>Stock Distribution</h3><p>loading</p></div>)
         :
         (
         <div style={{width:900, height:600, display:'flex', flexDirection:'row'}}>
