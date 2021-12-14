@@ -1,9 +1,9 @@
 # Basic Stock Suggestion Engine
 Takes in a monetary input from the user and maps the input the suggestion number of shares purchased for each of the stocks listed. 
 ### Members ###
-Jason 
-Vishal
-Anjali  
+Jason \
+Vishal\
+Anjali\
 Abishek
 
 ## Instructions to run ##
