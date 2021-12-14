@@ -54,9 +54,10 @@ def initGlobals():
 # since index funds might have missing values for the last 30 minutes of market open drop last row of values
 def loadTickers(sym, period, interval):
     data = yf.download(sym, period=period, interval=interval)
-    if(sym == 'INDEX' and interval != "1d"):
-        n=data.shape[0]
-        data.drop(data.index[n-1],inplace=True)
+    data.dropna(inplace =True)
+    # if(sym == 'INDEX' and interval != "1d"):
+    #     n=data.shape[0]
+    #     data.drop(data.index[n-1],inplace=True)
     return data
 
 ## Parse through the data obtained from tickers change timestamp to datetime for string format 
@@ -134,7 +135,7 @@ class Selection(Resource):
         AMOUNT = float(args.amount)
         CLOSINGINFO = loadTickers(investment_types[SELECTED], "1d", "1d")
         if(SECOND_TYPE == 'NONE'):
-            STOCKINFO = loadTickers(investment_types[SELECTED], "5d", "30m")
+            STOCKINFO = loadTickers(investment_types[SELECTED], "5d", "15m")
             distributeStocks(AMOUNT)
         else :
             sym = investment_types[SELECTED]+" "+investment_types[SECOND_TYPE]
